@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv.org e-Print archive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #fff;
+            color: #000;
+            line-height: 1.6;
+        }
+
+        /* Password Screen Styles */
+        #password-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+
+        .password-container {
+            background: white;
+            padding: 60px 50px;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .password-container h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #b31b1b;
+            font-weight: normal;
+        }
+
+        .password-container .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+
+        .password-container input:focus {
+            outline: none;
+            border-color: #b31b1b;
+        }
+
+        .password-container button {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            background-color: #b31b1b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+
+        .password-container button:hover {
+            background-color: #8b1515;
+        }
+
+        .error-message {
+            color: #b31b1b;
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        /* ArXiv Page Styles */
+        #arxiv-page {
+            display: none;
+        }
+
+        header {
+            background-color: #b31b1b;
+            padding: 10px 0;
+            border-bottom: 4px solid #8b1515;
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #b31b1b;
+            font-size: 24px;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        nav {
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+            padding: 8px 0;
+        }
+
+        .nav-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            font-size: 13px;
+        }
+
+        .nav-content a {
+            color: #0000ee;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .nav-content a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .paper-id {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .authors {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .authors a {
+            color: #0000ee;
+            text-decoration: none;
+        }
+
+        .authors a:hover {
+            text-decoration: underline;
+        }
+
+        .metadata {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 4px solid #b31b1b;
+            margin: 30px 0;
+            font-size: 14px;
+        }
+
+        .metadata p {
+            margin-bottom: 10px;
+        }
+
+        .metadata strong {
+            font-weight: bold;
+        }
+
+        .abstract {
+            margin: 30px 0;
+        }
+
+        .abstract h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .abstract p {
+            text-align: justify;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .download-section {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 25px;
+            margin: 40px 0;
+            border-radius: 6px;
+        }
+
+        .download-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #b31b1b;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #8b1515;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(179, 27, 27, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #b31b1b;
+            border: 2px solid #b31b1b;
+        }
+
+        .btn-secondary:hover {
+            background-color: #b31b1b;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .pdf-viewer {
+            margin: 40px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #525659;
+        }
+
+        .pdf-viewer iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+        }
+
+        footer {
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+            padding: 30px 0;
+            margin-top: 60px;
+            font-size: 13px;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .footer-content a {
+            color: #0000ee;
+            text-decoration: none;
+        }
+
+        .footer-content a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Screen -->
+    <div id="password-screen">
+        <div class="password-container">
+            <h1>arXiv</h1>
+            <p class="subtitle">Restricted Access</p>
+            <input 
+                type="password" 
+                id="password-input" 
+                placeholder="Enter access code"
+                autocomplete="off"
+            >
+            <button onclick="checkPassword()">Access Paper</button>
+            <p class="error-message" id="error-message">Incorrect password. Please try again.</p>
+        </div>
+    </div>
+
+    <!-- ArXiv Page -->
+    <div id="arxiv-page">
+        <header>
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <div class="logo-img">α</div>
+                    <div class="logo-text">
+                        <h1>arXiv.org</h1>
+                        <p>e-Print archive</p>
+                    </div>
+                </a>
+            </div>
+        </header>
+
+        <nav>
+            <div class="nav-content">
+                <a href="#">Home</a>
+                <a href="#">Search</a>
+                <a href="#">Browse</a>
+                <a href="#">Help</a>
+                <a href="#">About</a>
+            </div>
+        </nav>
+
+        <main>
+            <div class="paper-id">arXiv:2502.12345v1 [gift.birthday] 4 Feb 2026</div>
+            
+            <h2>Tripti Tripathi Best: A Comprehensive Analysis</h2>
+
+            <div class="authors">
+                <a href="https://harsh-doshii.github.io/">hdoshi</a>
+            </div>
+
+            <div class="metadata">
+                <p><strong>Submission Date:</strong> February 6, 2026</p>
+                <p><strong>Category:</strong> Joybaiting</p>
+                <p><strong>Comments:</strong> Happy Birthday Tripti Tripathi, loads of love!</p>
+                <p><strong>Subjects:</strong> Frontal Lobe Development</p>
+            </div>
+
+            <div class="abstract">
+                <h3>Abstract</h3>
+                <p>
+                    Tripti Tripathi is turning 25! 
+                </p>
+            </div>
+
+            <div class="download-section">
+                <h3>📄 Download and View Paper</h3>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="downloadPDF()">
+                        ⬇ Download PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="toggleViewer()">
+                        👁 View PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="pdf-viewer" id="pdf-viewer" style="display: none;">
+                <iframe id="pdf-frame" src=""></iframe>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <p>Made with ❤️ as a special birthday gift</p>
+                <p style="margin-top: 10px; font-style: italic;">
+                    "A true friend is one who celebrates your birthday with a research paper."
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Password Protection
+        function checkPassword() {
+            const input = document.getElementById('password-input');
+            const errorMsg = document.getElementById('error-message');
+            const passwordScreen = document.getElementById('password-screen');
+            const arxivPage = document.getElementById('arxiv-page');
+
+            if (input.value === 'ttripathi') {
+                passwordScreen.style.display = 'none';
+                arxivPage.style.display = 'block';
+                sessionStorage.setItem('authenticated', 'true');
+            } else {
+                errorMsg.classList.add('show');
+                input.value = '';
+                input.focus();
+                
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Allow Enter key to submit password
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('password-input');
+            if (input) {
+                input.focus();
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkPassword();
+                    }
+                });
+            }
+
+            // Check if already authenticated in this session
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('password-screen').style.display = 'none';
+                document.getElementById('arxiv-page').style.display = 'block';
+            }
+        });
+
+        // PDF Viewer Toggle
+        function toggleViewer() {
+            const viewer = document.getElementById('pdf-viewer');
+            const frame = document.getElementById('pdf-frame');
+            
+            if (viewer.style.display === 'none') {
+                // Replace 'your-paper.pdf' with your actual PDF filename
+                frame.src = 'triparty.pdf';
+                viewer.style.display = 'block';
+                viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                viewer.style.display = 'none';
+                frame.src = '';
+            }
+        }
+
+        // PDF Download
+        function downloadPDF() {
+            // Replace 'your-paper.pdf' with your actual PDF filename
+            const link = document.createElement('a');
+            link.href = 'triparty.pdf';
+            link.download = 'birthday-research-paper.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
